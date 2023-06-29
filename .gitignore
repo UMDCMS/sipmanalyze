@@ -1,2 +1,3 @@
 src/sipmanalyze/version.py
+**/__pycache__/*
 .vscode/*
