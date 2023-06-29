@@ -57,6 +57,22 @@ def make_ratio_figure():
   return fig, (ax_upper, ax_lower)
 
 
+def make_2d_figure():
+  """
+  Function for make in a standard CMS plot with heat map plots
+
+  The return format will be the same as a matplotlib figure declaration: The
+  figure object + the single axes object.
+  """
+  matplot.style.use(mplhep.style.CMS)
+  fig = matplot.pyplot.figure(constrained_layout=False)
+  spec = fig.add_gridspec(ncols=1, nrows=1, width_ratios=[1], height_ratios=[1])
+  ax = fig.add_subplot(spec[0, 0])
+  ax.set_xlabel('', horizontalalignment='right', x=1.0)
+  ax.set_ylabel('', horizontalalignment='right', y=1.0)
+  return fig, ax
+
+
 def _get_range1d(pdf, data=None, prange=None):
   """Getting the 1D plotting range"""
   if prange is not None:
@@ -358,6 +374,24 @@ def add_std_label(ax, label=None, **kwargs):
     mplhep.plot.yscale_text(ax=ax)
   except:
     pass
+
+  # Scaling to accommodate additional text boxes (wrapped as text might not be
+  # present)
+  #while hep.plot.overlap(ax, _text_bbox(ax)) > 0:
+  #  ax.set_ylim(ax.get_ylim()[0], ax.get_ylim()[-1] * 1.1)
+  #  ax.figure.canvas.draw()
+  return ax
+
+
+def add_std_2dlabel(ax, label=None, **kwargs):
+  """
+  Typical labels to be added onto the plot. Borrowing the CMS format for now.
+  """
+  kwargs.setdefault('loc', 0)  # Top left exterior
+  kwargs.setdefault('rlabel', '(Light source)')
+  kwargs.setdefault('exp', 'HGCAL')
+  kwargs.setdefault('data', True)
+  mplhep.cms.label(ax=ax, label=label, **kwargs)
 
   # Scaling to accommodate additional text boxes (wrapped as text might not be
   # present)
