@@ -304,8 +304,9 @@ def set_bounds(variable_estimates,limits_dict):
 #- max_iterations is an integer indicating the maximum number of iterations allowed during the fitting
 #- limits dict is the limits dictionary created by the set_bounds function
 #- import_data_results is the output of the function import_data
+#- OPTIONAL: message is an optional bool usually set to false which can give messages relating to the final state of the fit
 #- returns zfit result and zfit pdf
-def run_iterative_pdf_fit(pdf,parameters,obs,max_iterations,limits_dict,import_data_results):
+def run_iterative_pdf_fit(pdf,parameters,obs,max_iterations,limits_dict,import_data_results,message=False):
   #error testing
   if max_iterations <=0 or not isinstance(max_iterations,int):
     raise Exception("max_iterations must be a positive integer")
@@ -327,6 +328,7 @@ def run_iterative_pdf_fit(pdf,parameters,obs,max_iterations,limits_dict,import_d
   
   #iterate to run pdf and then determine if it should be rerun and set the new upper and lower bounds
   run_fitting=False
+  at_logical_limit=[]
   for i in range(max_iterations):
     run_fitting=False
     pdf_bin = zfit.pdf.BinnedFromUnbinnedPDF(pdf, obs_bin)
@@ -335,19 +337,29 @@ def run_iterative_pdf_fit(pdf,parameters,obs,max_iterations,limits_dict,import_d
     result = minimizer.minimize(nll_bin)
     result.hesse()
     
-    if i == max_iterations-1 and result.params.at_limit:
-      print("In ",max_iterations," iterations the pdf did not converge properly, the following parameters hit a limit")
-      for name,parameter in parameters.items():
-        if parameter.at_limit:
-          print("parameter: ",name," value: ", result.params[parameter]["value"]," upper_bound: ",limits_dict[name]["upper_bound"]," lower_bound: ",limits_dict[name]["lower_bound"])
+    #Determine if the last run is a good fit and don't run extra unnecessary code and make output statements for each
+    if i == max_iterations-1:
+      if message:
+        non_logical_limit=False
+        for name,parameter in parameters.items():
+          if parameter.at_limit and name not in at_logical_limit:
+            if non_logical_limit == False:
+              print("In ",max_iterations," iterations the pdf has not converged properly, the following parameters hit limits which are not logically necessary")
+              non_logical_limit=True
+            print("parameter: "+str(name)+" value: "+str(result.params[parameter]["value"])+" upper_bound: "+str(limits_dict[name]["upper_bound"])+" lower_bound: "+str(limits_dict[name]["lower_bound"]))
+      break
     
+    at_logical_limit=[]
+    
+    #loop through parameters to test if any of them hit a limit, and if so expand the bounds as reasonable
     for name,parameter in parameters.items():
       if parameter.at_limit:
         value=result.params[parameter]["value"]
         error=result.params[parameter]["hesse"]["error"]
         upper_error=value+error
         lower_error=value-error
-    
+        
+        #check upper bounds
         if limits_dict[name]["upper_bound"]-upper_error<=10e-4:
           test_upper_limit=limits_dict[name]["upper_bound"]+limits_dict[name]["width"]
           if "upper_max" not in limits_dict[name]:
@@ -363,7 +375,10 @@ def run_iterative_pdf_fit(pdf,parameters,obs,max_iterations,limits_dict,import_d
               else:
                 limits_dict[name]["upper_bound"]=test_upper_limit
                 parameter.upper=limits_dict[name]["upper_bound"]
-     
+            else:
+              at_logical_limit.append(name)
+    
+        #check lower bounds
         if lower_error-limits_dict[name]["lower_bound"]<=10e-4:
           test_lower_limit=limits_dict[name]["lower_bound"]-limits_dict[name]["width"]
           if "lower_max" not in limits_dict[name]:
@@ -379,9 +394,18 @@ def run_iterative_pdf_fit(pdf,parameters,obs,max_iterations,limits_dict,import_d
               else:
                 limits_dict[name]["lower_bound"]=test_lower_limit
                 parameter.lower=limits_dict[name]["lower_bound"]
+            else:
+              at_logical_limit.append(name)
     
+    #if no parameters hit a limit, or only hit limits that are logical limits, do not iterate again
     if run_fitting==False:
       break
   
+  #at end of run message if any variables hit a logical limit
+  if len(at_logical_limit)>0 and message:
+        print("The following parameters reached a logical limit ")
+        for name in at_logical_limit:
+          print("parameter: "+str(name)+" value: "+str(result.params[parameters[name]]["value"])+" upper_bound: "+str(limits_dict[name]["upper_bound"])+" lower_bound: "+str(limits_dict[name]["lower_bound"]))  
+
   return result, pdf
   
