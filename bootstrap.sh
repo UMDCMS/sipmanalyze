@@ -3,10 +3,11 @@
 cat <<EOF >start.sh
 #!/bin/bash
 
-COFFEA_IMAGE=coffeateam/coffea-dask:0.7.21-fastjet-3.4.0.1-gc3d707c
+SINGULARITY_PATH=/cvmfs/unpacked.cern.ch/registry.hub.docker.com/
+SINGULARITY_IMAGE=fnallpc/fnallpc-docker:tensorflow-2.12.0-gpu-singularity
 
-SINGULARITY_SHELL=\$(which bash) singularity exec -p -B \${PWD}:/srv --pwd /srv \\
-  /cvmfs/unpacked.cern.ch/registry.hub.docker.com/\${COFFEA_IMAGE} \\
+SINGULARITY_SHELL=\$(which bash) singularity exec -p -B \${PWD}:/srv --pwd /srv --nv \\
+  \${SINGULARITY_PATH}/\${SINGULARITY_IMAGE} \\
   /bin/bash --rcfile /srv/.bashrc
 EOF
 
@@ -20,10 +21,14 @@ install_env() {
   export TMPDIR=\$(mktemp -d -p .)
   .env/bin/python -m ipykernel install --user
   rm -rf \$TMPDIR && unset TMPDIR
-  git clone https://github.com/UMDCMS/sipmpdf.git
-  git clone https://github.com/UMDCMS/sipmanalyze.git
-  .env/bin/python -m pip install -q ./sipmpdf
-  .env/bin/python -m pip install -q ./sipmanalyze
+  if [[ ! -d "./sipmpdf" ]]; then
+    git clone https://github.com/UMDCMS/sipmpdf.git
+  fi
+  if [[ ! -d "./sipmanalyze" ]]; then
+    git clone https://github.com/UMDCMS/sipmanalyze.git
+  fi
+  .env/bin/python -m pip install -q -e ./sipmpdf
+  .env/bin/python -m pip install -q -e ./sipmanalyze
   echo "done."
 }
 
