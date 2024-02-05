@@ -13,5 +13,4 @@ that can be used by for analysis level code.
 
 """
 
-from . import waveform
-from . import standard
+from . import histogram_output, standard, waveform
