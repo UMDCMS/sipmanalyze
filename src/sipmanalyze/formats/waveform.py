@@ -5,18 +5,18 @@ waveform.py
 Handling waveform-like data inputs
 
 The file will handled the data formats that is used for the SiPM calibration
-analysis. All data formats is expected to be handled using awkward arrays, which
-gives us the most coverage with ROOT files used by HEP, and the python numerical
-analysis tools like numpy and scipy. This also allows for flexible and arbitrary
-data formats to be loaded in without the need for a predefined structure. The
-return of these `from_` functions will typically be either awkward arrays.
+analysis. All data formats is expected to be handled using awkward arrays,
+which gives us the most coverage with ROOT files used by HEP, and the python
+numerical analysis tools like numpy and scipy. This also allows for flexible
+and arbitrary data formats to be loaded in without the need for a predefined
+structure. The return of these `from_` functions will typically be either
+awkward arrays.
 
 """
 
-from typing import Dict, Union, List
+from typing import Union
 from dataclasses import dataclass
 
-import textwrap
 import awkward
 import uproot
 import numpy
@@ -51,14 +51,15 @@ class waveform_container:
         """
         Getting the waveform data from a plain text file.
 
-        The first line of the file will be either 5 numbers or 3 numbers, indicating
-        the data collection and trigger setup. The next lines will be the waveform
-        encoded in hex format.
+        The first line of the file will be either 5 numbers or 3 numbers,
+        indicating the data collection and trigger setup. The next lines will
+        be the waveform encoded in hex format.
         """
         with open(filepath, "r") as f:
             """Getting the settings line"""
             settings_line = f.readline().split()
-            if len(settings_line) == 5:  # This is the old format with 5 inputs.
+            # This is the old format with 5 inputs.
+            if len(settings_line) == 5:
                 settings = waveform_settings(
                     timeintervals=float(settings_line[0]),
                     triggerdelay=int(0),
@@ -83,14 +84,16 @@ class waveform_container:
                 print(f"\rRunning events {idx}...", end="")
                 return numpy.array(
                     [
-                        int(line[i : i + settings.adc_bits], 16)  # Folding the results
+                        # Folding the results
+                        int(line[i: i + settings.adc_bits], 16)
                         for i in range(0, len(line), settings.adc_bits)
                     ]
                 ).astype(__adc_dtype_dict__[settings.adc_bits])
 
             waveforms = awkward.values_astype(
                 awkward.Array(
-                    [convert_line(line.strip(), idx + 1) for idx, line in enumerate(f)]
+                    [convert_line(line.strip(), idx + 1)
+                     for idx, line in enumerate(f)]
                 ),
                 __adc_dtype_dict__[settings.adc_bits],
             )

@@ -5,18 +5,17 @@ waveform.py
 Handling waveform-like data inputs
 
 The file will handled the data formats that is used for the SiPM calibration
-analysis. All data formats is expected to be handled using awkward arrays, which
-gives us the most coverage with ROOT files used by HEP, and the python numerical
-analysis tools like numpy and scipy. This also allows for flexible and arbitrary
-data formats to be loaded in without the need for a predefined structure. The
-return of these `from_` functions will typically be either awkward arrays.
+analysis. All data formats is expected to be handled using awkward arrays,
+which gives us the most coverage with ROOT files used by HEP, and the python
+numerical analysis tools like numpy and scipy. This also allows for flexible
+and arbitrary data formats to be loaded in without the need for a predefined
+structure. The return of these `from_` functions will typically be either
+awkward arrays.
 
 """
 
-from typing import Dict, Union, List
 from dataclasses import dataclass
 
-import textwrap
 import awkward
 import uproot
 import numpy
@@ -69,7 +68,8 @@ class standard_container:
             )
             data["payload"] = awkward.from_regular(arr[:, 8:])
         else:
-            raise RuntimeError(f"Unrecognized format! For input files {filename}")
+            raise RuntimeError(
+                f"Unrecognized format! For input files {filename}")
 
         return standard_container(runinfo=standard_runinfo(test="mytest"), data=data)
 
@@ -89,4 +89,5 @@ class standard_container:
     def save_to_file(self, filename: str) -> None:
         with uproot.recreate(filename) as f:
             # f['run_info'] = {k: v for k, v in self.runinfo.__dict__.items()}
-            f["DataTree"] = {field: self.data[field] for field in self.data.fields}
+            f["DataTree"] = {field: self.data[field]
+                             for field in self.data.fields}
