@@ -15,8 +15,9 @@ dependencies = [
     "mplhep",
     "matplotlib",
     "scipy",
-    "uproot==4.3.7", # Still using awkwardv1 for now.
-    "awkward==1.10.3"
+    # Still using awkwardv1 for now.
+    "uproot==4.3.7", 
+    "awkward==1.10.4"
 ]
 dynamic = ["version"]
 
