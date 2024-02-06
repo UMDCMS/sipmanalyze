@@ -25,14 +25,14 @@ For future usage, you can simply start the session using the newly generated scr
 
 ```bash
 cd workdir
-./start.sh
+source ./start.sh
 ```
 
 The first time you run this script, the package will automatically pull the
 required packages. This will only be done for the first time setup, subsequent
-`./start.sh` calls should be fast. If GPUs are available at the cluster in
-question, the fitting package will automatically switch to using GPUs whenever
-possible.
+`source ./start.sh` calls should be fast. If GPUs are available at the cluster
+in question, the fitting package will automatically switch to using GPUs
+whenever possible.
 
 *Known issue*: because the `sipmpdf` fitting package requires the use of
 `tensorflow` package, which in turns requires the use of CPUs with at least
