@@ -25,7 +25,7 @@ For future usage, you can simply start the session using the newly generated scr
 
 ```bash
 cd workdir
-./start.sh
+source ./start.sh
 ```
 
 The first time you run this script, the package will automatically pull the
