@@ -16,8 +16,7 @@ install_env() {
   set -e
   echo "Installing shallow virtual environment in \$PWD/.env..."
   python -m venv --without-pip --system-site-packages .env
-  unlink .env/lib64  # HTCondor can't transfer symlink to directory and it appears optional
-  # work around issues copying CVMFS xattr when copying to tmpdir
+  unlink .env/lib64
   export TMPDIR=\$(mktemp -d -p .)
   .env/bin/python -m ipykernel install --user
   rm -rf \$TMPDIR && unset TMPDIR
