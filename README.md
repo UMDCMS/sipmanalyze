@@ -21,7 +21,8 @@ chmod +x bootstrap.sh
 ./bootstrap.sh
 ```
 
-For future usage, you can simply start the session using the newly generated script:
+For future usage, you can simply start the session using the newly generated
+script:
 
 ```bash
 cd workdir
@@ -34,10 +35,18 @@ required packages. This will only be done for the first time setup, subsequent
 in question, the fitting package will automatically switch to using GPUs
 whenever possible.
 
-*Known issue*: because the `sipmpdf` fitting package requires the use of
+_Known issue_: because the `sipmpdf` fitting package requires the use of
 `tensorflow` package, which in turns requires the use of CPUs with at least
-Advanced Vector Extension 2 (AVX2). Certain clusters with very OLD CPU models
+Advanced Vector Extension 2 (AVX2). Certain clusters with very old CPU models
 will not work.
+
+_Known issue_: When running the singularity container, you will sometimes be
+greeted with the issues regarding `ldconfig` where files are not symbolic
+links. You can safely ignore these messages.
+
+_Known issue_: When you are running `zfit`/`tensorflow` on non-GPU machines,
+you will get error messages like "failed call to cuInit: CUDA_ERROR_NO_DEVICE:
+no CUDA-capable device is detected". You can safely ignore these messages.
 
 ## Running the code
 
@@ -46,13 +55,12 @@ Examples for running the code base is given as `jupyter` notebooks in the
 session simply as:
 
 ```bash
-jupyter notebook --port 5125 # Or whatever port you are wish to use.
+jupyter notebook --no-browser --port 5125 # Or whatever port you are wish to use.
 ```
 
 Then, interact with the notebook as usual. It would be encouraged that common
 analysis routines be reorganized into python modules in the `src/sipmanalyze`
 directory to allow for batch processing of data sets.
-
 
 ## Modifying or upgrading
 
