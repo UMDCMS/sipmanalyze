@@ -26,7 +26,7 @@ show below can be found in the [`examples/condor_lxplus*`](../examples) files.
   path is important, as tarball works with relative directory in mind)
   ```bash
   cd workdir # Or "cd /srv" if you are running this command within singularity
-  tar --exclude-caches-all zcf venv.tar.gz .env sipmanalyze sipmpdf
+  tar --exclude-caches-all -zcf venv.tar.gz .env sipmanalyze sipmpdf
   ```
 - Step 2: Prepare your python script. Notice that the python script can at most
   have 1 command line input that is modified by the condor job index (This is a
@@ -42,6 +42,11 @@ show below can be found in the [`examples/condor_lxplus*`](../examples) files.
   singularity exec -p -B ${PWD}:/srv --pwd /srv --nv \
    /cvmfs/unpacked.cern.ch/registry.hub.docker.com/fnallpc/fnallpc-docker:tensorflow-2.12.0-gpu-singularity \
    /bin/bash -c "source .env/bin/activate; python condor_lxplus_example.py ${0}"
+  ```
+  Before submission to the condor queue, it would be worth it to check that the
+  scripts run as expected:
+  ```bash
+  /bin/bash your_script.py 0
   ```
 
 - Step 4: Prepare the condor JDL configurations. Here one will need to specify
