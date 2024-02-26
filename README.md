@@ -46,7 +46,7 @@ Examples for running the code base is given as `jupyter` notebooks in the
 session simply as:
 
 ```bash
-jupyter notebook --port 5125 # Or whatever port you are wish to use.
+jupyter notebook --no-browser --port 5125 # Or whatever port you are wish to use.
 ```
 
 Then, interact with the notebook as usual. It would be encouraged that common
