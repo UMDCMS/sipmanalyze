@@ -4,23 +4,23 @@ If you want to run the analysis routine using condor, the way you need to go
 about doing this will vary by machine, due to the technologies available at
 each machine.
 
-## Fermilab LPC
+## Using `dask`
 
 For interacting with condor or batch processes, the simplest method would be to
-use `dask` to call function directly in your interactive process. We have
-provided a simple class for handling how the various methods are transmitted in
-the using the `sipmanalyze.condor.make_lpc_client` method. A simple script one
-can run would be:
+use `dask` to call function directly in your interactive process.
+
+This method is currently under construction, and will not work with either
+[`lpcjobqueue`][lpcjobqueue] or [`dask-lxplus`][dask-lxplus].
 
 
-## CERN lxplus
+## Vanilla condor script usage
 
-As of writing, the equivalent of `lpcjobqueue` on lxplus,
-[`dask-lxplus`][dask-lxplus], does not support the spawning job queues in from
-singularity images. For this we will need to run condor jobs in a more
-old-fashioned way. The following instructions assume that you have created the
+As of writing, both `lpcjobqueue` and `dask-lxplus` has issues spawning
+compatible jobs due to the heavy dependency of `zfit` and `tensorflow`. The
+following instructions are done for running condor jobs right now the
+old-fashioned way. The instructions assume that you have created the
 environment following default bootstrap instructions. Examples of the files
-show below can be found in the [`examples/condor_lxplus*`](../examples) files. 
+show below can be found in the [`examples/condor_lxplus*`](../examples) files.
 
 - Step 1. Prepare a tarball of the execution environment (notice that working
   path is important, as tarball works with relative directory in mind)
@@ -64,5 +64,5 @@ Notice that this method requires a lot more file-keeping on the side of the
 analyzer, and thus is much less desirable than the solution that is available
 with working with condor directly using `dask`.
 
-
+[lpcjobqueue]: https://github.com/CoffeaTeam/lpcjobqueue
 [dask-lxplus]: https://github.com/cernops/dask-lxplus
