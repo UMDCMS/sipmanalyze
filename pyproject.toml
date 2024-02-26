@@ -17,7 +17,10 @@ dependencies = [
     "scipy",
     # Still using awkwardv1 for now.
     "uproot==4.3.7", 
-    "awkward==1.10.4"
+    "awkward==1.10.4",
+    # For condor related work
+    "dask_jobqueue<=0.8.2",
+    "lpcjobqueue@git+https://github.com/CoffeaTeam/lpcjobqueue@v0.2.10"
 ]
 dynamic = ["version"]
 
@@ -28,6 +31,9 @@ path = "src/sipmanalyze/__init__.py"
 
 [tool.hatch.build.hooks.vcs]
 version-file = "src/sipmanalyze/version.py"
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.setuptools_scm]
 write_to = "src/sipmanalyze/_version.py"

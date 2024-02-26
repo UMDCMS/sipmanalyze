@@ -53,6 +53,11 @@ Then, interact with the notebook as usual. It would be encouraged that common
 analysis routines be reorganized into python modules in the `src/sipmanalyze`
 directory to allow for batch processing of data sets.
 
+For more detailed documentation of what the various functions and methods
+provided in the package do, see the documentation and examples in the
+[`notebook`](notebook) directory. For more example of how one can run the code
+(for example: batch submissions with condor, alternate deployment methods and
+such), look at the description in the [`docs`](docs) directory.
 
 ## Modifying or upgrading
 
