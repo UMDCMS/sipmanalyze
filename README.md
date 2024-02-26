@@ -46,7 +46,7 @@ Examples for running the code base is given as `jupyter` notebooks in the
 session simply as:
 
 ```bash
-jupyter notebook --no-browser --port 5125 # Or whatever port you are wish to use.
+jupyter notebook --port 5125 # Or whatever port you are wish to use.
 ```
 
 Then, interact with the notebook as usual. It would be encouraged that common
@@ -58,7 +58,6 @@ provided in the package do, see the documentation and examples in the
 [`notebook`](notebook) directory. For more example of how one can run the code
 (for example: batch submissions with condor, alternate deployment methods and
 such), look at the description in the [`docs`](docs) directory.
-
 
 ## Modifying or upgrading
 
