@@ -5,7 +5,6 @@ cat <<EOF >start.sh
 
 SINGULARITY_PATH=/cvmfs/unpacked.cern.ch/registry.hub.docker.com/
 SINGULARITY_IMAGE=fnallpc/fnallpc-docker:tensorflow-2.12.0-gpu-singularity
-
 SINGULARITY_SHELL=\$(which bash) singularity exec -p -B \${PWD}:/srv --pwd /srv --nv \\
   \${SINGULARITY_PATH}/\${SINGULARITY_IMAGE} \\
   /bin/bash --rcfile /srv/.bashrc

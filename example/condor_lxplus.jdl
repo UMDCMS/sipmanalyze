@@ -1,0 +1,9 @@
+executable           = condor_lxplus.sh
+requirements         = (OpSysAndVer =?= "CentOS7")
++JobFlavour          = "longlunch"
+Transfer_Input_Files = venv.tar.gz, condor_lxplus_example.py
+input                = $(ProcId)
+output               = sipm_analyze_lxplus_example.$(ClusterId).$(ProcId).stdout
+error                = sipm_analyze_lxplus_example.$(ClusterId).$(ProcId).stderr
+log                  = sipm_analyze_lxplus_example.$(ClusterId).$(ProcId).log
+queue 10
